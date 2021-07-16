@@ -62,3 +62,53 @@ dependencies {
 
 
 ```
+
+Iniciando a estrutura do projecto
+
+[-] feita a criacao da estrutura de Getx_pattern
+
+[+] como vou interagir com cloud_firestore [que eh um banco de dado rectivo do firebase ]
+ [-] primeiro estarei criando uma interface de repository que ele sera capaz de ter todos os metodos para se interagir com firabase [buscar os dados no banco ]
+ e ele 'e um  banco reactivo por isso usarei streams
+
+ ```dart
+ 'lib/app/data/repositories/todo_repository_interface.dart'
+
+import 'package:flutfirebase/app/data/models/todo_model.dart';
+
+abstract class IFirestoreTodoRepository {
+  /** Interface que tera todos os metods para se comunicar com o banco reactivo do firebase [Cloud_firestore]
+
+  **/
+  // como ele 'e um banco de daos reactivo usarei streams na hora  de pegas os dados
+  Stream<List<TodoModel>> getTodos();
+}
+
+
+
+```
+
+# e sua Classe Repository que a implementa fica 
+```dart
+'lib/app/data/repositories/todo_repository.dart'
+
+import 'package:flutfirebase/app/data/models/todo_model.dart';
+
+import 'todo_repository_interface.dart';
+
+class FireStoreTodoRepository implements IFirestoreTodoRepository {
+  @override
+  Stream<List<TodoModel>> getTodos() {
+    // TODO: implement getTodos
+    throw UnimplementedError();
+  }
+}
+
+
+```
+
+```
+
+
+
+ ```
