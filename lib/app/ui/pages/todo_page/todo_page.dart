@@ -1,20 +1,139 @@
-
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutfirebase/app/ui/utils/shared.dart';
 import '../../../controllers/todo_controller.dart';
-
 
 class TodoPage extends GetView<TodoController> {
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('TodoPage'),
-      ),
+      // appBar: AppBar(
+      //   title: Text('ALL TODOS'),
+      // ),
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: Text('TodoController'),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text('Todos Recentes'),
+            SizedBox(height: 20),
+            // Spacer(),
+            ListView.separated(
+                separatorBuilder: (_, index) => Divider(
+                      color: Colors.grey[800],
+                    ),
+                shrinkWrap: true,
+                itemCount: 5,
+                itemBuilder: (ctx, index) {
+                  return ListTile(
+                    onTap: () {},
+                    leading: Container(
+                      height: 30,
+                      width: 30,
+                      // alignment: Alignment.center,
+                      // padding: EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: Theme.of(ctx).primaryColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.check,
+                        color: Colors.white,
+                      ),
+                    ),
+                    title: Text(
+                      'Todo title',
+                      style: TextStyle(
+                        color: Colors.grey[200],
+                      ),
+                    ),
+                  );
+                })
+          ],
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => SimpleDialog(
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+              backgroundColor: Colors.grey[800],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              titlePadding: EdgeInsets.all(8),
+              title: Container(
+                padding: EdgeInsets.only(left: 5),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(0.4),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      'Nova Nota',
+                      style: TextStyle(
+                        color: Colors.white54,
+                      ),
+                    ),
+                    Spacer(),
+                    IconButton(
+                        icon: Icon(Icons.cancel,
+                            color: Theme.of(context).primaryColor),
+                        onPressed: () {
+                          Get.back();
+                        }),
+                  ],
+                ),
+              ),
+              children: [
+                Divider(),
+                TextFormField(
+                  controller: controller.title_edit.value,
+                  autofocus: true,
+                  maxLines: 4,
+                  autofillHints: ['saidino', 'hacker', 'claudia', 'Mariamo'],
+                  style:
+                      TextStyle(color: Colors.white, height: 1.5, fontSize: 18),
+                  decoration: InputDecoration(
+                    hintText: 'ex: Programar django ',
+                    hintStyle: TextStyle(
+                      color: Colors.white30,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                SizedBox(
+                  height: 30,
+                  width: size.width,
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: Text(
+                      'Salvar',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    onPressed: () {},
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+        label: Text('create'),
+        icon: Icon(Icons.add),
       ),
     );
   }
 }
-  

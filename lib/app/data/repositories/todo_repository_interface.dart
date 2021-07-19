@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutfirebase/app/data/models/todo_model.dart';
 
 abstract class IFirestoreTodoRepository {
@@ -5,5 +6,5 @@ abstract class IFirestoreTodoRepository {
 
   **/
   // como ele 'e um banco de daos reactivo usarei streams na hora  de pegas os dados
-  Stream<List<TodoModel>> getTodos();
+  Stream<QuerySnapshot<TodoModel>> getTodos();
 }
