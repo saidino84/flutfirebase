@@ -25,26 +25,47 @@ class TodoPage extends GetView<TodoController> {
                 shrinkWrap: true,
                 itemCount: 5,
                 itemBuilder: (ctx, index) {
-                  return ListTile(
-                    onTap: () {},
-                    leading: Container(
-                      height: 30,
-                      width: 30,
-                      // alignment: Alignment.center,
-                      // padding: EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                        color: Theme.of(ctx).primaryColor,
-                        shape: BoxShape.circle,
-                      ),
+                  return Dismissible(
+                    background: Container(
+                      padding: EdgeInsets.only(left: 20),
+                      alignment: Alignment.centerLeft,
+                      color: Colors.redAccent,
                       child: Icon(
-                        Icons.check,
-                        color: Colors.white,
+                        Icons.delete,
+                        color: Colors.grey[200],
                       ),
                     ),
-                    title: Text(
-                      'Todo title',
-                      style: TextStyle(
-                        color: Colors.grey[200],
+                    key: Key(index.toString()),
+                    onDismissed: (direction) {
+                      switch (direction) {
+                        case DismissDirection.startToEnd:
+                          {
+                            print('removed');
+                          }
+                          break;
+                      }
+                    },
+                    child: ListTile(
+                      onTap: () {},
+                      leading: Container(
+                        height: 30,
+                        width: 30,
+                        // alignment: Alignment.center,
+                        // padding: EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Theme.of(ctx).primaryColor,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.check,
+                          color: Colors.white,
+                        ),
+                      ),
+                      title: Text(
+                        'Todo title',
+                        style: TextStyle(
+                          color: Colors.grey[200],
+                        ),
                       ),
                     ),
                   );
@@ -95,7 +116,7 @@ class TodoPage extends GetView<TodoController> {
                 TextFormField(
                   controller: controller.title_edit.value,
                   autofocus: true,
-                  maxLines: 4,
+                  maxLines: 2,
                   autofillHints: ['saidino', 'hacker', 'claudia', 'Mariamo'],
                   style:
                       TextStyle(color: Colors.white, height: 1.5, fontSize: 18),
@@ -124,7 +145,9 @@ class TodoPage extends GetView<TodoController> {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      controller.saveTodo();
+                    },
                   ),
                 ),
               ],

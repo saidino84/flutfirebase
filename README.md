@@ -109,14 +109,115 @@ class FireStoreTodoRepository implements IFirestoreTodoRepository {
 
 ```dart
 'TodoModel 
-o modelo tera um metodo factory que alem fromJson tera um fromDocumets a referir documents do firestore
+o modelo tera um metodo factory que alem fromJson tera um fromDocumets a referir documents do firestore'
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class TodoModel {
+  String? uid;
+  String title;
+  bool checked;
+  final DocumentReference? reference; //areferencia
+
+  TodoModel(
+      {this.reference, this.uid, required this.title, required this.checked});
+
+  factory TodoModel.fromDocumets(
+      DocumentSnapshot<Map<String, dynamic>> firestore_docus) {
+    // este firestore_docus aparecera em formato json
+    // dai que eu acessarei com map
+    return new TodoModel(
+        checked: firestore_docus['checked'],
+        title: firestore_docus['title'],
+        reference: firestore_docus['reference']!);
+  }
+
+  Map<String, dynamic> toJson() =>
+      {'title': title, 'reference': reference!, 'checked': checked};
+}
 
 
 
  ```
 
-# TodoPage
+# TodoPage Contem dissible Widget
  ![](todo_screnn.png)
+
+ ```dart
+ return Scaffold(
+      // appBar: AppBar(
+      //   title: Text('ALL TODOS'),
+      // ),
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text('Todos Recentes'),
+            SizedBox(height: 20),
+            // Spacer(),
+            ListView.separated(
+                separatorBuilder: (_, index) => Divider(
+                      color: Colors.grey[800],
+                    ),
+                shrinkWrap: true,
+                itemCount: 5,
+                itemBuilder: (ctx, index) {
+
+                  <!-- Aplicando dissmisble WIgets -->
+                  
+                  return Dismissible(
+                    background: Container(
+                      padding: EdgeInsets.only(left: 20),
+                      alignment: Alignment.centerLeft,
+                      color: Colors.redAccent,
+                      child: Icon(
+                        Icons.delete,
+                        color: Colors.grey[200],
+                      ),
+                    ),
+                    key: Key(index.toString()),
+                    onDismissed: (direction) {
+                      switch (direction) {
+                        case DismissDirection.startToEnd:
+                          {
+                            print('removed');
+                          }
+                          break;
+                      }
+                    },
+                    child: ListTile(
+                      onTap: () {},
+                      leading: Container(
+                        height: 30,
+                        width: 30,
+                        // alignment: Alignment.center,
+                        // padding: EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Theme.of(ctx).primaryColor,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.check,
+                          color: Colors.white,
+                        ),
+                      ),
+                      title: Text(
+                        'Todo title',
+                        style: TextStyle(
+                          color: Colors.grey[200],
+                        ),
+                      ),
+                    ),
+                  );
+                })
+          ],
+        ),
+      ),
+
+
+ ```
 
  # on Add new Task open popup 
  ![](add_todo_dialog.png)
@@ -165,7 +266,7 @@ o modelo tera um metodo factory que alem fromJson tera um fromDocumets a referir
                 TextFormField(
                   controller: controller.title_edit.value,
                   autofocus: true,
-                  maxLines: 1,
+                  maxLines: 2,
                   autofillHints: ['saidino', 'hacker', 'claudia', 'Mariamo'],
                   style:
                       TextStyle(color: Colors.white, height: 1.5, fontSize: 18),
