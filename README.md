@@ -309,3 +309,27 @@ class TodoModel {
  ```
  # when focussed the dialog
  ![](dialog_input_focused.png)
+
+
+
+ # FIREBASFIREESTORE BASICS
+
+ ``dart
+
+body: SafeArea(
+        child: StreamBuilder(
+            stream: FirebaseFirestore.instance.collection('todo').snapshots(),
+            builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
+              return ListView(
+                children: snapshot.data!.docs.map((todo) {
+                  return Center(
+                    child: ListTile(
+                      title: Text(todo['title']),
+                    ),
+                  );
+                }).toList(),
+              );
+            }),
+      ),
+
+ ```

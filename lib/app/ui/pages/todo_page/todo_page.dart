@@ -1,3 +1,4 @@
+import 'package:flutfirebase/app/data/models/todo_model.dart';
 import 'package:flutfirebase/app/ui/utils/shared.dart';
 import '../../../controllers/todo_controller.dart';
 
@@ -18,57 +19,68 @@ class TodoPage extends GetView<TodoController> {
             Text('Todos Recentes'),
             SizedBox(height: 20),
             // Spacer(),
-            ListView.separated(
-                separatorBuilder: (_, index) => Divider(
-                      color: Colors.grey[800],
-                    ),
-                shrinkWrap: true,
-                itemCount: 5,
-                itemBuilder: (ctx, index) {
-                  return Dismissible(
-                    background: Container(
-                      padding: EdgeInsets.only(left: 20),
-                      alignment: Alignment.centerLeft,
-                      color: Colors.redAccent,
-                      child: Icon(
-                        Icons.delete,
-                        color: Colors.grey[200],
-                      ),
-                    ),
-                    key: Key(index.toString()),
-                    onDismissed: (direction) {
-                      switch (direction) {
-                        case DismissDirection.startToEnd:
-                          {
-                            print('removed');
-                          }
-                          break;
-                      }
-                    },
-                    child: ListTile(
-                      onTap: () {},
-                      leading: Container(
-                        height: 30,
-                        width: 30,
-                        // alignment: Alignment.center,
-                        // padding: EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          color: Theme.of(ctx).primaryColor,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.check,
-                          color: Colors.white,
-                        ),
-                      ),
-                      title: Text(
-                        'Todo title',
-                        style: TextStyle(
-                          color: Colors.grey[200],
-                        ),
-                      ),
-                    ),
-                  );
+            StreamBuilder(
+                // stream: controller.repository.getTodos(),
+                stream:
+                    FirebaseFirestore.instance.collection('todo').snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) return Text('Something went wrong !');
+                  if (snapshot.connectionState == ConnectionState.done)
+                    return ListView.separated(
+                        separatorBuilder: (_, index) => Divider(
+                              color: Colors.grey[800],
+                            ),
+                        shrinkWrap: true,
+                        itemCount: 5,
+                        itemBuilder: (ctx, index) {
+                          // TodoModel? todo = snapshot.data?.first;
+                          return Dismissible(
+                            background: Container(
+                              padding: EdgeInsets.only(left: 20),
+                              alignment: Alignment.centerLeft,
+                              color: Colors.redAccent,
+                              child: Icon(
+                                Icons.delete,
+                                color: Colors.grey[200],
+                              ),
+                            ),
+                            key: Key(index.toString()),
+                            onDismissed: (direction) {
+                              switch (direction) {
+                                case DismissDirection.startToEnd:
+                                  {
+                                    print('removed');
+                                  }
+                                  break;
+                              }
+                            },
+                            child: ListTile(
+                              onTap: () {},
+                              leading: Container(
+                                height: 30,
+                                width: 30,
+                                // alignment: Alignment.center,
+                                // padding: EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(ctx).primaryColor,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              title: Text(
+                                // todo?.title ?? 'No data',
+                                'todo tile',
+                                style: TextStyle(
+                                  color: Colors.grey[200],
+                                ),
+                              ),
+                            ),
+                          );
+                        });
+                  return Text('Loading ...');
                 })
           ],
         ),

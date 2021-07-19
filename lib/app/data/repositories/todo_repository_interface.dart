@@ -6,5 +6,5 @@ abstract class IFirestoreTodoRepository {
 
   **/
   // como ele 'e um banco de daos reactivo usarei streams na hora  de pegas os dados
-  Stream<QuerySnapshot<TodoModel>> getTodos();
+  Stream<List<TodoModel>> getTodos();
 }
