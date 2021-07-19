@@ -314,22 +314,150 @@ class TodoModel {
 
  # FIREBASFIREESTORE BASICS
 
- ``dart
+ # exemplo completo
 
-body: SafeArea(
+ #  A CLASE CONTROLLER DEST WIDGET QUE GUARDA A REFENCIA DO todo de la no firestore.
+ ```dart
+class TodoController extends GetxController {
+  final title_edit = TextEditingController().obs;
+  TodoRepository repository = TodoRepository();
+  void saveTodo() {
+    if (title_edit.value.text.isNotEmpty) {
+      Get.snackbar(
+        'Edited',
+        '${title_edit.value.text}',
+        backgroundColor: Colors.grey[800],
+      );
+    }
+  }
+
+  Future<void> showData() async {
+    var data = repository.getTodos();
+  }
+}
+
+
+ ```
+
+ # O WIDGET COMPLETO COM AS PARTES DO TODO
+
+ ``` dart
+
+  @override
+  Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).primaryColor;
+    return Scaffold(
+      appBar: AppBar(
+        title: TextField(
+          controller: controller.titleEditctl,
+        ),
+        actions: [
+          IconButton(
+            onPressed: () => Get.toNamed(AppRoutes.TODO),
+            icon: Icon(Icons.file_present),
+          ),
+        ],
+      ),
+```
+# PARA SER RECUSIVO USAMOS O STREAM BUILDER PARA COMUNICAR EM TEMPO REAL COM BANCO DE DADOS
+```dart
+
+      body: SafeArea(
         child: StreamBuilder(
-            stream: FirebaseFirestore.instance.collection('todo').snapshots(),
+            // stream: FirebaseFirestore.instance.collection('todo').snapshots(),
+            // como ja criei refencia d todo no homeController entao posso usalo
+            stream: controller.todoReference.orderBy('title').snapshots(),
             builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (!snapshot.hasData)
+                return Center(child: CircularProgressIndicator.adaptive());
               return ListView(
                 children: snapshot.data!.docs.map((todo) {
-                  return Center(
+                  return Dismissible(
+                    background: Container(
+                      alignment: Alignment.centerLeft,
+                      decoration: BoxDecoration(color: primaryColor),
+                      child: Icon(
+                        Icons.delete,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+```
+# ACACO PARA APAGAR DO FIRESTORE
+```dart
+
+                    key: Key("${todo['title']}"),
+                    onDismissed: (direction) {
+                      controller.todoReference.doc(todo.id).delete();
+                      Get.snackbar('Delecao', 'Deletado com sucesso',
+                          backgroundColor: Colors.white);
+                    },
                     child: ListTile(
-                      title: Text(todo['title']),
+                      title: Text(
+                        "${todo['title']} + ${todo['checked']}",
+                        style: TextStyle(color: Colors.white30),
+                      ),
+```
+# ACAO PARA ACTUALIZAR NO FIRESTORE
+
+```dart
+                      leading: Checkbox(
+                        value:
+                            todo['checked'].toString().trim().toLowerCase() ==
+                                    'true'
+                                ? true
+                                : false,
+                        // == 'false'? true : false,
+                        //parse(todo['checked']),
+                        onChanged: (v) {
+                          bool todo_checked =
+                              todo['checked'].toString().trim().toLowerCase() ==
+                                      'true'
+                                  ? true
+                                  : false;
+                          controller.todoReference
+                              .doc(todo.id)
+                              .update({'checked': !todo_checked})
+                              .then(
+                                (value) => Get.snackbar(
+                                  'Updating',
+                                  'check updated sucessfull',
+                                  backgroundColor: Colors.blueAccent,
+                                ),
+                              )
+                              .catchError((error) {
+                                Get.snackbar('Update',
+                                    'Erro ao fazer update por favor verifique o database',
+                                    backgroundColor: primaryColor);
+                              });
+                        },
+                      ),
+                      onLongPress: () {
+                        // Apage ao precionar com alta preesao
+                      },
                     ),
                   );
                 }).toList(),
               );
             }),
       ),
+```
+# ACAO PARA ADICIONAR UM NOVO DADO NO FIRESTORE
+
+```dart
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          if (controller.titleEditctl.text.isNotEmpty) {
+            controller.todoReference.add({
+              'title': controller.titleEditctl.text,
+              'checked': false,
+            });
+          }
+          controller.titleEditctl.clear();
+        },
+        child: Text('Add'),
+      ),
+    );
+  }
+}
 
  ```

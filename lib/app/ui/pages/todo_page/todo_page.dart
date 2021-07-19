@@ -124,11 +124,11 @@ class TodoPage extends GetView<TodoController> {
                 ),
               ),
               children: [
-                Divider(),
-                TextFormField(
+                // Divider(),
+                TextField(
                   controller: controller.title_edit.value,
                   autofocus: true,
-                  maxLines: 2,
+                  maxLines: 5,
                   autofillHints: ['saidino', 'hacker', 'claudia', 'Mariamo'],
                   style:
                       TextStyle(color: Colors.white, height: 1.5, fontSize: 18),
