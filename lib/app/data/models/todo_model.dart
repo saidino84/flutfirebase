@@ -1,18 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TodoModel {
-  String? uid;
-  String title;
-  bool checked;
-  // final DocumentReference? reference; //areferencia
+  String? id;
+  String? title;
+  bool? checked;
 
-  TodoModel({this.uid, required this.title, required this.checked});
+  TodoModel({this.id, this.title, this.checked});
 
   TodoModel.fromJson(Map<String, dynamic> firestore_docus)
       : this(
-          checked: firestore_docus['checked'],
-          title: firestore_docus['title'],
+          checked: firestore_docus['checked'] as bool?,
+          title: firestore_docus['title'] as String?,
         );
 
-  Map<String, dynamic> toJson() => {'title': title, 'checked': checked};
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'checked': checked,
+      };
+
+  TodoModel copyWith({
+    String? id,
+    String? title,
+    bool? checked,
+  }) {
+    return TodoModel(
+      checked: checked ?? checked,
+      title: title ?? title,
+      id: id ?? id,
+    );
+  }
 }

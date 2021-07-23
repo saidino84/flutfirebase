@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
         // brightness: Brightness.dark,
       ),
       getPages: AppPages.app_pages,
+      initialRoute: AppRoutes.AUTH,
     );
   }
 }

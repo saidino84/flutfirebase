@@ -461,3 +461,65 @@ class TodoController extends GetxController {
 }
 
  ```
+
+
+# UTILS  [1] HOW TO CREATE ClipPath in Widget
+
+```dart
+ClipPath(
+            clipper: HomeTopCustomPainter(),
+            child: Container(
+              height: size.height * 0.5,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      end: Alignment.bottomLeft,
+                      begin: Alignment.topRight,
+                      colors: [
+                    Color(0xFF3383CD),
+                    Color(0xFF11249F),
+                  ])),
+              child: Column(
+                children: [
+                  Container(
+                    height: kToolbarHeight,
+                    child: Text('Well come'),
+                  ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Container(
+                          width: size.width * 0.7,
+                          height: 34,
+                          child: TextField(
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white24,
+
+                              suffixIcon: Padding(
+                                padding: EdgeInsets.all(5),
+                                child: Icon(Icons.search),
+                              ),
+                              // focusedBorder: InputBorder.none,
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Icon(Icons.scatter_plot_outlined,
+                            color: primaryColor),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+```
+

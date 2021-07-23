@@ -1,0 +1,11 @@
+ 
+	{
+		"__className": "UserPost",  
+		"userId": 1,
+		"id": 1,  
+		"title": "Json To Dart Model",  
+		"body": "Json to Dart advanced...",
+		"isold":true
+	}
+
+	

@@ -8,6 +8,9 @@ class TodoRepository implements IFirestoreTodoRepository {
   final CollectionReference todosCollection =
       FirebaseFirestore.instance.collection('todo');
 
+  final CollectionReference todoReference =
+      FirebaseFirestore.instance.collection('todo');
+
   // final todosRef = FirebaseFirestore.instance
   //     .collection('todo')
   //     .withConverter<TodoModel>(
@@ -17,12 +20,9 @@ class TodoRepository implements IFirestoreTodoRepository {
   List<TodoModel> todoFromFirestore(QuerySnapshot snapshot) {
     if (snapshot != null) {
       return snapshot.docs.map((element) {
+        print("##################### THIS IS AN ID =>${element.id}");
         Map<String, dynamic> data = element.data() as Map<String, dynamic>;
-        return TodoModel(
-          title: data['title'],
-          checked: data['checked'] as bool,
-          uid: element.id,
-        );
+        return TodoModel.fromJson(data).copyWith(id: element.id);
       }).toList();
     } else {
       return <TodoModel>[];
@@ -34,13 +34,37 @@ class TodoRepository implements IFirestoreTodoRepository {
     return todosCollection.snapshots().map(todoFromFirestore);
   }
 
+  /***
+   * TODO  OUTROS IMPLEMENTAM:
+   * final Firestore firestore=Firestore.instance;
+   * Stream<List<TodoModel> getTodos(){
+   * 
+   *  return firestore.collection('todo').snapshots().map( (query){
+   *    return query.documents.map( (doc){return TodoModel.fromJson(doc);})
+   * 
+   * })
+   * }
+   */
+
   Future create_new_todo(String title) async {
     /** Cria um novo Todo*/
     return await todosCollection.add({'title': title, 'checked': false});
   }
 
-  Future complete__task(uid) async {
+  Future<void> remove_todo_by_id(TodoModel todo) async {
+    await todosCollection.doc(todo.id).delete().then((value) {
+      print('deletado um item');
+    }).catchError((error) {
+      throw Exception(" Erro ao apager Item ${error}");
+    });
+  }
+
+  Future complete__task(TodoModel todo) async {
     /** Actualiza um novo Todo ao fazer checked */
-    return await todosCollection.doc(uid).update({'checked': true});
+    // TodoModel model = TodoModel.copyWith(id:);
+    bool chec = !todo.checked!;
+    return await todosCollection
+        .doc(todo.id)
+        .update({'checked': chec, 'title': todo.title});
   }
 }

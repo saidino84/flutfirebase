@@ -3,104 +3,99 @@ import 'package:flutfirebase/app/ui/utils/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controllers/home_controller.dart';
+import 'components/home_top_custom_painter.dart';
 
 class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     var primaryColor = Theme.of(context).primaryColor;
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        title: TextField(
-          controller: controller.titleEditctl,
-        ),
-        actions: [
-          IconButton(
-            onPressed: () => Get.toNamed(AppRoutes.TODO),
-            icon: Icon(Icons.file_present),
+      body: Stack(
+        children: [
+          Positioned(
+            top: 0,
+            right: 0,
+            left: 0,
+            child: ClipPath(
+              clipper: HomeTopCustomPainter(),
+              child: Container(
+                height: size.height * 0.3,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        end: Alignment.bottomLeft,
+                        begin: Alignment.topRight,
+                        colors: [
+                      Color(0xFF3383CD),
+                      Color(0xFF11249F),
+                    ])),
+                child: Column(
+                  children: [
+                    Container(
+                      // height: kToolbarHeight,
+                      child: Text('Well come'),
+                    ),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Container(
+                            width: size.width * 0.7,
+                            height: 40,
+                            child: TextField(
+                              style: TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white24,
+
+                                suffixIcon: Padding(
+                                  padding: EdgeInsets.all(5),
+                                  child: Icon(Icons.search),
+                                ),
+                                // focusedBorder: InputBorder.none,
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                            child: IconButton(
+                                icon: Icon(Icons.scatter_plot_outlined,
+                                    color: primaryColor),
+                                onPressed: () {
+                                  Get.toNamed(AppRoutes.TODO);
+                                })),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            right: 10,
+            top: size.height * 0.4,
+            width: 48.1,
+            height: size.height * 0.4,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  end: Alignment.bottomLeft,
+                  begin: Alignment.topRight,
+                  colors: [
+                    Color(0xFF3383CD),
+                    Color(0xFF11249F),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
           ),
         ],
-      ),
-      body: SafeArea(
-        child: StreamBuilder(
-            // stream: FirebaseFirestore.instance.collection('todo').snapshots(),
-            // como ja criei refencia d todo no homeController entao posso usalo
-            stream: controller.todoReference.orderBy('title').snapshots(),
-            builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (!snapshot.hasData)
-                return Center(child: CircularProgressIndicator.adaptive());
-              return ListView(
-                children: snapshot.data!.docs.map((todo) {
-                  return Dismissible(
-                    background: Container(
-                      alignment: Alignment.centerLeft,
-                      decoration: BoxDecoration(color: primaryColor),
-                      child: Icon(
-                        Icons.delete,
-                        color: Colors.grey[800],
-                      ),
-                    ),
-                    key: Key("${todo['title']}"),
-                    onDismissed: (direction) {
-                      controller.todoReference.doc(todo.id).delete();
-                      Get.snackbar('Delecao', 'Deletado com sucesso',
-                          backgroundColor: Colors.white);
-                    },
-                    child: ListTile(
-                      title: Text(
-                        "${todo['title']} + ${todo['checked']}",
-                        style: TextStyle(color: Colors.white30),
-                      ),
-                      leading: Checkbox(
-                        value:
-                            todo['checked'].toString().trim().toLowerCase() ==
-                                    'true'
-                                ? true
-                                : false,
-                        // == 'false'? true : false,
-                        //parse(todo['checked']),
-                        onChanged: (v) {
-                          bool todo_checked =
-                              todo['checked'].toString().trim().toLowerCase() ==
-                                      'true'
-                                  ? true
-                                  : false;
-                          controller.todoReference
-                              .doc(todo.id)
-                              .update({'checked': !todo_checked})
-                              .then(
-                                (value) => Get.snackbar(
-                                  'Updating',
-                                  'check updated sucessfull',
-                                  backgroundColor: Colors.blueAccent,
-                                ),
-                              )
-                              .catchError((error) {
-                                Get.snackbar('Update',
-                                    'Erro ao fazer update por favor verifique o database',
-                                    backgroundColor: primaryColor);
-                              });
-                        },
-                      ),
-                      onLongPress: () {
-                        // Apage ao precionar com alta preesao
-                      },
-                    ),
-                  );
-                }).toList(),
-              );
-            }),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (controller.titleEditctl.text.isNotEmpty) {
-            controller.todoReference.add({
-              'title': controller.titleEditctl.text,
-              'checked': false,
-            });
-          }
-          controller.titleEditctl.clear();
-        },
-        child: Text('Add'),
       ),
     );
   }
