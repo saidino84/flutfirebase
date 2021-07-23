@@ -523,3 +523,126 @@ ClipPath(
           ),
 ```
 
+
+# AUTHETICACOA COM GOOGLE SIGN E FIREBASE-AUTH
+Para amais explicacoes
+!()[https://www.youtube.com/watch?v=1k-gITZA9CI]
+
+Neste projecto adicionei as dependencias :
+```dart
+# google sign
+  firebase_auth: ^3.0.1
+  google_sign_in: ^5.0.5
+
+  #Google Icon
+  font_awesome_flutter: ^9.1.0
+```
+para tal efeito e isso so sera possivel se adicionar nas configuracoes do porjecto no firebase 
+as duas chaves de sh1 e sh6
+que segundo adocumentacao oficial !()[https://developers.google.com/android/guides/client-auth]
+pode se gerar :
+```py
+keytool -list -v \
+-alias androiddebugkey -keystore ~/.android/debug.keystore
+
+password: android  
+
+Certificate fingerprint: SHA1: DA:39:A3:EE:5E:6B:4B:0D:32:55:BF:EF:95:60:18:90:AF:D8:07:09
+
+
+Alias: AndroidDebugKey
+MD5: A5:88:41:04:8D:06:71:6D:FE:33:76:87:AC:AD:19:23
+SHA1: A7:89:E5:05:C8:17:A1:22:EA:90:6E:A6:EA:A3:D4:8B:3A:30:AB:18
+SHA-256: 05:A2:2C:35:EE:F2:51:23:72:4D:72:67:A5:6C:8C:58:22:2A:00:D6:DB:F6:45:D5:C1:82:D2:80:A4:69:A8:FE
+Valid until: Wednesday, August 10, 2044
+
+
+copie as chaves e cole no projecto do firebase clicando na barra de ingrenage de settings
+(configuracoes do projecto> e para baixo tera icon do app e clique em Adicionar impressa digital)
+```
+
+#Basic Google e FirebaseAUth
+
+```dart
+
+/app_controller.dart
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutfirebase/app/ui/utils/shared.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+class AppController extends GetxController {
+  final googleSignIn = GoogleSignIn();
+  late GoogleSignInAccount? _user;
+
+  Stream get user_auth => FirebaseAuth.instance.authStateChanges();
+
+  GoogleSignInAccount? get user => _user;
+
+  Future googleLogin() async {
+    try {
+      final googleUser = await googleSignIn.signIn();
+      if (googleUser == null) return;
+      _user = googleUser;
+      final googleAuth = await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      await FirebaseAuth.instance.signInWithCredential(credential);
+    } catch (e) {
+      Get.defaultDialog(title: 'Erro no Login', content: Text('$e'));
+    }
+    if (_user != null) {
+      Get.toNamed(AppRoutes.HOME);
+    }
+    update();
+  }
+}
+
+
+# AUth_page
+Container(
+              padding: const EdgeInsets.all(16),
+              alignment: Alignment.center,
+              child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                      primary: Colors.white,
+                      onPrimary: Colors.black,
+                      minimumSize: Size(double.infinity, 50)),
+                  label: Text('Use seu email',
+                      style: TextStyle(color: Colors.black)),
+                  icon: FaIcon(FontAwesomeIcons.google, color: Colors.red),
+                  // text: 'Registration',
+                  onPressed: () {
+                    print('LOgging ...');
+                    app_controller.googleLogin();
+                    print('Loged sucess');
+                  }),
+            ),
+            Container(
+              padding: const EdgeInsets.all(16),
+              alignment: Alignment.center,
+              child: RichText(
+                text: TextSpan(text: ' Ja Tiveste aqui ?', children: [
+                  TextSpan(
+                      text: 'Entrar',
+                      style: TextStyle(color: Colors.greenAccent))
+                ]),
+              ),
+            )
+
+```
+# Initial page
+
+![](initial_page.png)
+
+# PARA PEGAR AS CREDENCIAS DO USER LGADO NO APP COMU AFOTO O NOME E TAL TAL 
+INstaciamos a classe User que vem da classse FirebaseAuth.instace.currentUser!
+```dart
+ User? user =FirebaseAuth.instance.currentUser;
+ ou final user =FirebaseAuth.instance.currentUser!;
+
+ pagendo foto do usuaio
+ CircleAvatar(radius:40,backgroundImage:NetWorkImage(user.photoURL!))
+```

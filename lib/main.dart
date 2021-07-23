@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'app/ui/utils/shared.dart';
@@ -9,6 +10,7 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
+  final app_contoller = Get.lazyPut(() => AppController());
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -21,7 +23,9 @@ class MyApp extends StatelessWidget {
         // brightness: Brightness.dark,
       ),
       getPages: AppPages.app_pages,
-      initialRoute: AppRoutes.AUTH,
+      initialRoute: FirebaseAuth.instance.currentUser == null
+          ? AppRoutes.AUTH
+          : AppRoutes.HOME,
     );
   }
 }
