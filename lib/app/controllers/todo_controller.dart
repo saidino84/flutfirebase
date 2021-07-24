@@ -8,12 +8,19 @@ class TodoController extends GetxController with StateMixin {
   TodoRepository todo_repository = TodoRepository();
   void saveTodo() {
     if (title_edit.value.text.isNotEmpty) {
-      todo_repository.create_new_todo(title_edit.value.text);
-      Get.snackbar(
-        'Edited',
-        '${title_edit.value.text}',
-        backgroundColor: Colors.grey[800],
-      );
+      todo_repository.create_new_todo(title_edit.value.text).then((value) {
+        Get.snackbar(
+          'Saved Sucess full',
+          '${title_edit.value.text}',
+          backgroundColor: Colors.blueAccent,
+        );
+      }).catchError((err) {
+        Get.snackbar(
+          'Save Fail',
+          'Erro ao salvar os seus dados devido :${err.toString()}',
+          backgroundColor: Colors.red,
+        );
+      });
     }
     title_edit.value.clear();
   }
