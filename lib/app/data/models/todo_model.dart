@@ -24,9 +24,9 @@ class TodoModel {
     bool? checked,
   }) {
     return TodoModel(
-      checked: checked ?? checked,
-      title: title ?? title,
-      id: id ?? id,
+      checked: checked ?? this.checked,
+      title: title ?? this.title,
+      id: id ?? this.id,
     );
   }
 }

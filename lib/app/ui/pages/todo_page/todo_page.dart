@@ -14,7 +14,7 @@ class TodoPage extends GetView<TodoController> {
       // appBar: AppBar(
       //   title: Text('ALL TODOS'),
       // ),
-      // resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: false,
       body: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -43,13 +43,13 @@ class TodoPage extends GetView<TodoController> {
           // Spacer(),
           Expanded(
             child: StreamBuilder(
-                // stream: controller.repository.getTodos(),
+                stream: controller.showData(),
                 // stream: controller.showData(),
-                stream:
-                    FirebaseFirestore.instance.collection('todo').snapshots(),
-                // if (snapshot.hasError) return Text('Something went wrong !');
+                // stream:
+                //     FirebaseFirestore.instance.collection('todo').snapshots(),
+
                 // builder: (context, AsyncSnapshot<List<TodoModel>> snapshot) {
-                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                builder: (context, AsyncSnapshot<List<TodoModel>> snapshot) {
                   // if (snapshot.connectionState == ConnectionState.done)
                   if (snapshot.hasError) {
                     return QueryError(
@@ -59,9 +59,10 @@ class TodoPage extends GetView<TodoController> {
                   switch (snapshot.connectionState) {
                     case ConnectionState.active:
                       {
-                        // return ListTodos(snapshot);
+                        return ListTodos(snapshot);
 
-                        var checkd = false.obs;
+                        /** The basic alwasy works
+                         * 
                         return ListView(
                           children: snapshot.data!.docs.map((e) {
                             return CheckboxListTile(
@@ -72,6 +73,8 @@ class TodoPage extends GetView<TodoController> {
                                 });
                           }).toList(),
                         );
+
+                        **/
                       }
                     case ConnectionState.waiting:
                       {
