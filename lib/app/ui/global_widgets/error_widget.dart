@@ -2,8 +2,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:flutfirebase/app/ui/utils/shared.dart';
 
-class QueryError extends StatelessWidget {
-  const QueryError({
+class AppDialogError extends StatelessWidget {
+  const AppDialogError({
     Key? key,
     required this.message,
   }) : super(key: key);

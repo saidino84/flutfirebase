@@ -35,7 +35,9 @@ class TodoPage extends GetView<TodoController> {
               ),
               IconButton(
                 icon: Icon(Icons.devices_outlined),
-                onPressed: () {},
+                onPressed: () {
+                  Get.toNamed(AppRoutes.PLAYER);
+                },
               ),
             ],
           )),

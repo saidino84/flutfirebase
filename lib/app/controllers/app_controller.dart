@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutfirebase/app/ui/global_widgets/error_widget.dart';
 import 'package:flutfirebase/app/ui/utils/shared.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -28,11 +29,15 @@ class AppController extends GetxController {
       );
       await FirebaseAuth.instance.signInWithCredential(credential);
     } catch (e) {
-      Get.defaultDialog(title: 'Erro no Login', content: Text('$e'));
+      Get.defaultDialog(
+        title: 'Erro no Login',
+        content: AppDialogError(message: '[Erro ]: \n$e'),
+      ); //Text('$e  [ GOOGLE PLAY SERVICE NOT AVAILABLE '));
+      // AppDialogError(message: '[Erro ]: \n$e');
     }
     if (_user != null) {
       //DEpois do login ser bem sucedido vou pegar o as credencias do user logado
-      // _current_user = FirebaseAuth.instance.currentUser!;
+      app_user = FirebaseAuth.instance.currentUser!;
       Get.toNamed(AppRoutes.HOME);
     }
     update();
