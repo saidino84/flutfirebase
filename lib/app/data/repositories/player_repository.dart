@@ -13,6 +13,20 @@ class PlayerRepository {
   var image_uploaded = false;
   var audio_uploaded = false;
 
+  List<Song> songsFRimFirestore(QuerySnapshot snapshot) {
+    if (snapshot != null) {
+      return snapshot.docs.map((element) {
+        Map<String, dynamic> dada = element.data() as Map<String, dynamic>;
+        return Song.fromJson(dada).copyWith(uid: element.id);
+      }).toList();
+    }
+    return <Song>[];
+  }
+
+  Stream<List<Song>> getSongs() {
+    return song_reference.snapshots().map(songsFRimFirestore);
+  }
+
   // ignore: non_constant_identifier_names
   Future<bool> upload_image_e_audio_file({
     required Uint8List image_data,

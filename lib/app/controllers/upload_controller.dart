@@ -124,9 +124,9 @@ class UploadController extends GetxController {
       print('saving data...');
       var audio_data = song_uri.value;
       var audio_path = os_path.basename(audio_data.path);
-      if (!audio_path.endsWith(".mp3")) {
-        audio_path = audio_path + '.mp3';
-      }
+      // if (!audio_path.endsWith(".mp3")) {
+      //   audio_path = audio_path + '.mp3';
+      // }
       // Get.defaultDialog(title: 'File content type $audio_path');
       var task = MyFirebaseApi.uploadTask('testes/$audio_path', audio_data);
 /*  PODE TAMBEM FAZER-SE O SEGUINTE

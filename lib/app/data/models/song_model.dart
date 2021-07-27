@@ -19,7 +19,7 @@ class Song {
         artist: json['artist'],
         cover_url: json['cover_url'],
         songName: json['songName'],
-        songUrl: json['songName'],
+        songUrl: json['songUrl'],
         isSolo: json['isSolor']);
   }
   Map<String, dynamic> toJson() => {
