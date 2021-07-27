@@ -12,7 +12,7 @@ import '../data/repositories/player_repository.dart';
 
 class SongplayerController extends GetxController {
   final repository = PlayerRepository();
-  AudioPlayer player = AudioPlayer();
+  final player = AudioPlayer().obs;
   final playing = false.obs;
   final current_tab = 0.obs;
   final is_active = false;
@@ -30,21 +30,21 @@ class SongplayerController extends GetxController {
   void play_song(Song song) {
     // current_song!.value = song;
     print('SONG URL   ====${song.songUrl}');
-    player.setUrl(song.songUrl!);
-    player.play();
+    player.value.setUrl(song.songUrl!);
+    player.value.play();
     playing.value = true;
   }
 
   void play_pause() {
-    if (player.playing) {
-      player.pause();
+    if (player.value.playing) {
+      player.value.pause();
       playing.value = false;
     } else {
       try {
-        player.play();
+        player.value.play();
       } on Exception catch (e) {
-        player.setAsset('assets/audios/drake.mp3');
-        player.play();
+        player.value.setAsset('assets/audios/drake.mp3');
+        player.value.play();
         playing.value = true;
       } on Exception catch (e) {}
     }

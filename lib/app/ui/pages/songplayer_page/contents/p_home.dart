@@ -99,16 +99,18 @@ class PlayerHome extends GetView<SongplayerController> {
                                 radius: 30,
                                 backgroundImage: NetworkImage(song.cover_url!),
                               ),
-                              IconButton(
-                                onPressed: () {
-                                  controller.play_pause();
-                                },
-                                icon: Icon(
-                                  controller.playing.value
-                                      ? Icons.play_arrow_rounded
-                                      : Icons.pause,
-                                  color: Colors.white,
-                                  size: 40,
+                              Obx(
+                                () => IconButton(
+                                  onPressed: () {
+                                    controller.play_pause();
+                                  },
+                                  icon: Icon(
+                                    controller.player.value.playing
+                                        ? Icons.pause
+                                        : Icons.play_arrow_rounded,
+                                    color: Colors.white,
+                                    size: 40,
+                                  ),
                                 ),
                               )
                             ],
