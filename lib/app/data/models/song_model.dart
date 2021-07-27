@@ -30,7 +30,7 @@ class Song {
         'isSolor': this.isSolo
       };
 
-  Song compyWith(
+  Song copyWith(
       {String? uid,
       String? cover_url,
       String? songUrl,
@@ -42,6 +42,7 @@ class Song {
         cover_url: cover_url ?? this.cover_url,
         songName: songName ?? this.songName,
         artist: artist ?? this.artist,
-        isSolo: isSolo ?? this.isSolo);
+        isSolo: isSolo ?? this.isSolo,
+        songUrl: songUrl ?? this.songUrl);
   }
 }

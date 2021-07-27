@@ -81,7 +81,7 @@ class UploadController extends GetxController {
 
   Future get_audio() async {
     FilePickerResult? result =
-        await FilePicker.platform.pickFiles(type: FileType.image);
+        await FilePicker.platform.pickFiles(type: FileType.audio);
 
     if (result != null) {
       // PlatformFile file = result.files.single.path!;
@@ -113,6 +113,8 @@ class UploadController extends GetxController {
       }
     }
   }
+
+  // TESTE DE UPLOAD SIMPLE FILE
 
   final image_from_fire = ''.obs;
 

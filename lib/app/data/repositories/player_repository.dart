@@ -23,46 +23,47 @@ class PlayerRepository {
     required String artist,
     required bool is_solo,
   }) async {
+    image_uploaded = false;
+    audio_uploaded = false;
     print('Stared');
     // Criando objecto som
     Song song = Song(artist: artist, songName: title, isSolo: is_solo);
 
+    // UPLOAD DE IMAGE
     // pegando areferencia de pastas no storage
-    reference.child('flutfirebase').child('images').child(image_path);
+    final cover_ref =
+        FirebaseStorage.instance.ref('flutfirebase/covers/$image_path');
 
-    // Salvando a image
-    UploadTask image_uploadTask = reference.putData(image_data);
-    var download_uri;
-    image_uploadTask.then((e) {
-      download_uri = e.ref.getDownloadURL();
-      image_song_uri['cover_url'] = download_uri;
-      song.compyWith(cover_url: download_uri);
+    var cov_task = cover_ref.putData(image_data);
+    var cover_uri = await get_uploaded_image_uri(cov_task);
+    if (cover_uri != null) {
+      song = song.copyWith(cover_url: cover_uri);
       image_uploaded = true;
-    }).catchError((e) {
-      image_uploaded = true;
-    });
-
-// Salvando som
-    reference.child('flutfirebase').child('audios').child(audio_path);
-    print('image done');
-    UploadTask song_uploadTask = reference.putData(audio_data);
-    song_uploadTask.then((e) {
-      download_uri = e.ref.getDownloadURL();
-      image_song_uri['song_uri'] = download_uri;
-      song.compyWith(songUrl: download_uri);
-      audio_uploaded = true;
-    }).catchError((ee) {
-      audio_uploaded = true;
-    });
+    }
+    // UPLOAD DE SONG
+    final song_ref =
+        FirebaseStorage.instance.ref('flutfirebase/songs/$audio_path');
+    var song_task = song_ref.putData(audio_data);
+    var song_uri = await get_uploaded_image_uri(song_task);
+    // if (song_uri != null) {
+    song = song.copyWith(songUrl: song_uri);
+    audio_uploaded = true;
+    // }
 
     return save_song_to_cloud_firestore(song);
   }
 
+  Future<String?> get_uploaded_image_uri(UploadTask task) async {
+    if (task != null) {
+      final snapshot = await task.whenComplete(() {});
+      final uri_downloaded = await snapshot.ref.getDownloadURL();
+      return uri_downloaded;
+    } else {
+      return null;
+    }
+  }
+
   Future<bool> save_song_to_cloud_firestore(Song song) async {
-    // song.compyWith(
-    //   cover_url: image_song_uri['cover_uri'],
-    //   songUrl: image_song_uri['songUrl'],
-    // );
     if (audio_uploaded && image_uploaded) {
       await song_reference.add(song.toJson());
       return true;

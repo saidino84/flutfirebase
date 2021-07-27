@@ -175,8 +175,8 @@ class PlayerUpload extends GetView<UploadController> {
                           height: 50,
                           child: FlatButton(
                             onPressed: () {
-                              // controller.save_to();
-                              controller.upload_simple();
+                              controller.save_to();
+                              // controller.upload_simple();
                             },
                             child: Text(
                               'Salvar '.toUpperCase(),
