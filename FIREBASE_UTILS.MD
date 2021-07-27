@@ -383,7 +383,6 @@ class MyFirebaseApi {
         cover_uri = File(path).obs;
         has_cover.value = true;
         print('COVER PATH IS =====>$cover_uri');
-        // image.value = cover_uri.value as Null;
       }
     }
   }

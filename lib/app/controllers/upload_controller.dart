@@ -80,8 +80,8 @@ class UploadController extends GetxController {
   }
 
   Future get_audio() async {
-    FilePickerResult? result = await FilePicker.platform
-        .pickFiles(allowedExtensions: ['.mp3', '.wav'], allowMultiple: false);
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.image);
 
     if (result != null) {
       // PlatformFile file = result.files.single.path!;
@@ -114,6 +114,8 @@ class UploadController extends GetxController {
     }
   }
 
+  final image_from_fire = ''.obs;
+
   Future upload_simple() async {
     var isvalid = is_all_datagot();
     if (isvalid) {
@@ -124,17 +126,18 @@ class UploadController extends GetxController {
         audio_path = audio_path + '.mp3';
       }
       // Get.defaultDialog(title: 'File content type $audio_path');
-      // var task = MyFirebaseApi.uploadTask('testes/$audio_path', audio_data);
+      var task = MyFirebaseApi.uploadTask('testes/$audio_path', audio_data);
 /*  PODE TAMBEM FAZER-SE O SEGUINTE
-      MyFirebaseApi.uploadBytes(
+      // MyFirebaseApi.uploadBytes(
           'data/$audio_path', audio_data.readAsBytesSync());
       **/
       // Baixar o link do file
-      // if (task != null) {
-      //   final snapshot = await task.whenComplete(() {});
-      //   final urlDownload = await snapshot.ref.getDownloadURL();
-      // }
-      Get.snackbar('Save $isvalid', 'Save sucess ',
+      if (task != null) {
+        final snapshot = await task.whenComplete(() {});
+        final urlDownload = await snapshot.ref.getDownloadURL();
+        image_from_fire.value = urlDownload;
+      }
+      Get.snackbar('Save $isvalid', 'Save sucess ${image_from_fire.value} ',
           backgroundColor: Colors.blueAccent,
           icon: Icon(Icons.done_all, color: Colors.white),
           shouldIconPulse: true,
