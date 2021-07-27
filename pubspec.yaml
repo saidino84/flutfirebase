@@ -43,6 +43,10 @@ dependencies:
 
   # State Manager
   get: ^4.1.4
+
+  file_picker: ^3.0.3
+  # audioplayers: ^0.19.1
+  image_picker: ^0.8.2
   
  
 dev_dependencies:

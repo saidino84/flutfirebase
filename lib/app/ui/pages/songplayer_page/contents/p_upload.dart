@@ -1,7 +1,8 @@
 import 'package:flutfirebase/app/controllers/songplayer_controller.dart';
+import 'package:flutfirebase/app/controllers/upload_controller.dart';
 import 'package:flutfirebase/app/ui/utils/shared.dart';
 
-class PlayerUpload extends GetView<SongplayerController> {
+class PlayerUpload extends GetView<UploadController> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -28,22 +29,37 @@ class PlayerUpload extends GetView<SongplayerController> {
                 alignment: Alignment.center,
                 height: 160,
                 width: 160,
-                decoration: BoxDecoration(
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                child: Text(
-                  'Image',
-                  style: TextStyle(color: Colors.grey[800], fontSize: 24),
+                child: Obx(
+                  () => GestureDetector(
+                    onTap: () {
+                      controller.select_music_cover();
+                    },
+                    child: CircleAvatar(
+                      radius: 100,
+                      backgroundImage: FileImage(controller.cover_uri.value),
+                      child: controller.has_cover.value
+                          ? Text('')
+                          : Text(
+                              'cover image',
+                              style: TextStyle(
+                                  color: Colors.grey[200], fontSize: 24),
+                            ),
+                    ),
+                  ),
                 ),
               ),
               SizedBox(
                 height: 10,
               ),
-
               TextFormField(
                   onTap: () {
-                    Get.snackbar('busca de song', 'Ir agora mesmo ?');
+                    controller.get_audio().then((value) {
+                      Get.snackbar('Got sonmg', 'Song catch sucessfuly',
+                          backgroundColor: Colors.green);
+                    }).catchError((err) {
+                      Get.snackbar('Got sonmg', 'Song catch problem $err',
+                          backgroundColor: primaryColor);
+                    });
                   },
                   readOnly: true,
                   controller: controller.song_uri_contrl,
@@ -131,13 +147,15 @@ class PlayerUpload extends GetView<SongplayerController> {
                     return null;
                   }),
 
-              CheckboxListTile(
-                value: true,
-                onChanged: (e) {},
-                title: Text(
-                  ' Musica Solo',
-                  style: TextStyle(
-                    color: Colors.grey[800],
+              Obx(
+                () => CheckboxListTile(
+                  value: controller.is_solo.value,
+                  onChanged: controller.change_is_solo,
+                  title: Text(
+                    ' Musica Solo',
+                    style: TextStyle(
+                      color: Colors.grey[800],
+                    ),
                   ),
                 ),
               ),
