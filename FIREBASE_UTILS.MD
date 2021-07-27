@@ -292,4 +292,135 @@ class ListTodos{
 
 ```
 
+# FIREBASE STORAGE TIME
+
+```yaml
+
+  firebase_core: ^1.4.0 
+  firebase_storage: ^10.0.0
+
+  # google sign
+  firebase_auth: ^3.0.1
+  google_sign_in: ^5.0.5
+
+  #Google Icon
+  font_awesome_flutter: ^9.1.0
+
+  # State Manager
+  get: ^4.1.4
+
+  file_picker: ^3.0.3
+```
+
+# CLASSE RESPONSAVEL DE SE COMINCAR COM FIREBASE /repository
+
+```dart
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:firebase_storage/firebase_storage.dart';
+
+class MyFirebaseApi {
+  static UploadTask? uploadTask(String destination, File file) {
+    // Faz Upload
+    try {
+      final ref = FirebaseStorage.instance.ref(destination);
+      return ref.putFile(file);
+    } on FirebaseException catch (err) {
+      return null;
+    }
+  }
+
+  static UploadTask? uploadBytes(String destination, Uint8List data) {
+    try {
+      final ref = FirebaseStorage.instance.ref(destination);
+
+      return ref.putData(data);
+    } on FirebaseException catch (e) {
+      return null;
+    }
+  }
+}
+
+
+```
+
+# A PARTE DE PEGAR A FOTO/FILE E FAZER UPLOAD
+
+```dart
+
+  //sao os files pegues atraves do file picker
+  late Rx<File> song_uri;
+  late Rx<File> cover_uri;
+    Future get_audio() async {
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(allowMultiple: false,allowedExtensions: ['.mp3', '.wav']);
+
+    if (result != null) {
+      // PlatformFile file = result.files.single.path!;
+      var path = result.files.single.path!;
+      // var path = file.path;
+      if (path != null) {
+        song_uri = File(path).obs;
+        song_uri_contrl.text = os_path.basename(path); //os_path.basename(path);
+      }
+      Get.snackbar('Music', 'Sound catch sucessfully');
+    }
+  }
+
+    void select_music_cover() async {
+      /**selects file /image*/
+    has_cover.value = false;
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.image,exte);
+
+    if (result != null) {
+      PlatformFile file = result.files.first;
+      var path = file.path;
+      // Get.snackbar('${os_path.basename(!file)}', message)
+      Get.snackbar('Got image', '$path');
+      if (path != null) {
+        cover_uri = File(path).obs;
+        has_cover.value = true;
+        print('COVER PATH IS =====>$cover_uri');
+        // image.value = cover_uri.value as Null;
+      }
+    }
+  }
+
+  Future upload_simple() async {
+    var isvalid = is_all_data_got();//faz validacao se os dados foram pegues com sucess
+    if (isvalid) {
+      print('saving data...');
+      var audio_data = song_uri.value;
+      var audio_path = os_path.basename(audio_data.path);
+      if (!audio_path.endsWith(".mp3")) {
+        audio_path = audio_path + '.mp3';
+      }
+      // Get.defaultDialog(title: 'File content type $audio_path');
+      // var task = MyFirebaseApi.uploadTask('testes/$audio_path', audio_data);
+/*  PODE TAMBEM FAZER-SE O SEGUINTE
+      MyFirebaseApi.uploadBytes(
+          'data/$audio_path', audio_data.readAsBytesSync());
+      **/
+      // Baixar o link do file
+      // if (task != null) {
+      //   final snapshot = await task.whenComplete(() {});
+      //   final urlDownload = await snapshot.ref.getDownloadURL();
+      // }
+      Get.snackbar('Save $isvalid', 'Save sucess ',
+          backgroundColor: Colors.blueAccent,
+          icon: Icon(Icons.done_all, color: Colors.white),
+          shouldIconPulse: true,
+          showProgressIndicator: true);
+    } else {
+      Get.snackbar('Save $isvalid', 'preeche os campos todos sao necessarios',
+          backgroundColor: Colors.amberAccent,
+          icon: Icon(Icons.error_outline, color: Colors.redAccent));
+    }
+  }
+
+
+```
+
 

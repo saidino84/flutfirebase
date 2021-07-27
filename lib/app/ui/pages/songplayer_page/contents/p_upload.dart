@@ -36,7 +36,9 @@ class PlayerUpload extends GetView<UploadController> {
                     },
                     child: CircleAvatar(
                       radius: 100,
-                      backgroundImage: FileImage(controller.cover_uri.value),
+                      backgroundImage: controller.has_cover.value == true
+                          ? FileImage(controller.cover_uri.value)
+                          : null,
                       child: controller.has_cover.value
                           ? Text('')
                           : Text(
@@ -166,7 +168,10 @@ class PlayerUpload extends GetView<UploadController> {
                     child: SizedBox(
                         height: 50,
                         child: FlatButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            // controller.save_to();
+                            controller.upload_simple();
+                          },
                           child: Text(
                             'Salvar '.toUpperCase(),
                             style: TextStyle(
